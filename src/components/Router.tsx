@@ -8,7 +8,7 @@ interface IProps {
   isLoggedIn: null | User | boolean;
 }
 
-const AppRouter = ({ isLoggedIn }: IProps) => {
+const AppRouter: React.FC<IProps> = ({ isLoggedIn }) => {
   return (
     <Router>
       <Routes>

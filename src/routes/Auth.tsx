@@ -1,8 +1,11 @@
 import { useState } from "react";
-import { authService } from "fbase";
+import { authService, firebaseInstance } from "fbase";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  GoogleAuthProvider,
+  GithubAuthProvider,
+  signInWithPopup,
 } from "firebase/auth";
 
 const Auth = () => {
@@ -17,7 +20,7 @@ const Auth = () => {
     if (name === "password") setPassword(value);
   };
 
-  const onSubmit = async (event: React.FormEvent) => {
+  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault(); // 페이지 새로고침 방지
     try {
       let data;
@@ -42,6 +45,20 @@ const Auth = () => {
     setNewAccount((prev) => !prev);
   };
 
+  const onSocialClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    const button: HTMLButtonElement = event.currentTarget;
+    // console.log(button.name);
+    const { name } = button;
+    let provider;
+    if (name) {
+      provider = new GoogleAuthProvider();
+    } else {
+      provider = new GithubAuthProvider();
+    }
+    const data = await signInWithPopup(authService, provider);
+    console.log(data);
+  };
+
   return (
     <div>
       <form onSubmit={onSubmit}>
@@ -64,12 +81,16 @@ const Auth = () => {
         <input type="submit" value={newAccount ? "Create Account" : "Log in"} />
         {error}
       </form>
-      <span onClick={toggleAccount}>
+      <button onClick={toggleAccount}>
         {newAccount ? "Sign In" : "Create Account"}
-      </span>
+      </button>
       <div>
-        <button>Continue with Google</button>
-        <button>Continue with Github</button>
+        <button onClick={onSocialClick} name="google">
+          Continue with Google
+        </button>
+        <button onClick={onSocialClick} name="github">
+          Continue with Github
+        </button>
       </div>
     </div>
   );

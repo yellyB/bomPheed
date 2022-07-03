@@ -9,6 +9,7 @@ const Auth = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [newAccount, setNewAccount] = useState<boolean>(true);
+  const [error, setError] = useState<string>("");
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -31,8 +32,14 @@ const Auth = () => {
       }
       console.log(data);
     } catch (error) {
-      console.log(error);
+      if (error instanceof Error) {
+        setError(error.message);
+      }
     }
+  };
+
+  const toggleAccount = () => {
+    setNewAccount((prev) => !prev);
   };
 
   return (
@@ -55,7 +62,11 @@ const Auth = () => {
           onChange={onChange}
         />
         <input type="submit" value={newAccount ? "Create Account" : "Log in"} />
+        {error}
       </form>
+      <span onClick={toggleAccount}>
+        {newAccount ? "Sign In" : "Create Account"}
+      </span>
       <div>
         <button>Continue with Google</button>
         <button>Continue with Github</button>

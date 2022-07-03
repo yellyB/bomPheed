@@ -5,7 +5,7 @@ import Auth from "routes/Auth";
 import Home from "routes/Home";
 
 interface IProps {
-  isLoggedIn: null | User;
+  isLoggedIn: null | User | boolean;
 }
 
 const AppRouter = ({ isLoggedIn }: IProps) => {

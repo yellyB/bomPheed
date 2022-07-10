@@ -10,8 +10,13 @@ import {
   updateDoc,
 } from "@firebase/firestore";
 import { useEffect } from "react";
+import { User } from "firebase/auth";
 
-const Home = () => {
+interface IProps {
+  userObj: null | User;
+}
+
+const Home: React.FC<IProps> = ({ userObj }) => {
   const ref = doc(
     dbService,
     "pheed",
@@ -35,11 +40,8 @@ const Home = () => {
       //   res.forEach((document: any) => console.log(document.data()));
       // }
     });
-    // console.log(dbPheeds);
     // dbPheeds.forEach((document: any) => console.log(document.data()));
   };
-
-  console.log(pheeds);
 
   const onSubmit = async (event: any) => {
     event.preventDefault();
@@ -47,7 +49,11 @@ const Home = () => {
     //   text: pheed,
     //   createdAt: Date.now(),
     // });
-    setDoc(ref, { text: pheed, createdAt: Date.now() }, { merge: true });
+    setDoc(
+      ref,
+      { text: pheed, createdAt: Date.now(), creatorId: userObj?.uid },
+      { merge: true }
+    );
     setPheed("");
   };
 

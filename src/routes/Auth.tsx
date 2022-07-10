@@ -33,7 +33,6 @@ const Auth = () => {
       } else {
         data = await signInWithEmailAndPassword(authService, email, password);
       }
-      console.log(data);
     } catch (error) {
       if (error instanceof Error) {
         setError(error.message);
@@ -47,7 +46,6 @@ const Auth = () => {
 
   const onSocialClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
     const button: HTMLButtonElement = event.currentTarget;
-    // console.log(button.name);
     const { name } = button;
     let provider;
     if (name) {
@@ -56,7 +54,6 @@ const Auth = () => {
       provider = new GithubAuthProvider();
     }
     const data = await signInWithPopup(authService, provider);
-    console.log(data);
   };
 
   return (

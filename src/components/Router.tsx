@@ -13,9 +13,10 @@ import Navigation from "./Navigation";
 
 interface IProps {
   isLoggedIn: null | User | boolean;
+  userObj: null | User;
 }
 
-const AppRouter: React.FC<IProps> = ({ isLoggedIn }) => {
+const AppRouter: React.FC<IProps> = ({ isLoggedIn, userObj }) => {
   return (
     <Router>
       {isLoggedIn && <Navigation />}
@@ -23,7 +24,7 @@ const AppRouter: React.FC<IProps> = ({ isLoggedIn }) => {
         <Route />
         {isLoggedIn ? (
           <>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<Home userObj={userObj} />} />
             <Route path="/profile" element={<Profile />} />
           </>
         ) : (

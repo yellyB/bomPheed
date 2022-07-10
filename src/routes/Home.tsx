@@ -11,6 +11,7 @@ import {
 } from "@firebase/firestore";
 import { useEffect } from "react";
 import { User } from "firebase/auth";
+import Pheed from "components/Pheed";
 
 interface IProps {
   userObj: null | User;
@@ -33,7 +34,7 @@ const Home: React.FC<IProps> = ({ userObj }) => {
         {
           text: res.data()?.text,
           createdAt: res.data()?.createdAt,
-          id: res.id,
+          creatorId: res.id,
         },
       ]);
       // if(res){
@@ -67,6 +68,7 @@ const Home: React.FC<IProps> = ({ userObj }) => {
     getPheeds();
   }, []);
 
+  console.log(pheeds[0], userObj?.uid);
   return (
     <>
       <form onSubmit={onSubmit}>
@@ -81,9 +83,11 @@ const Home: React.FC<IProps> = ({ userObj }) => {
       </form>
       <div>
         {pheeds.map((pheed: any) => (
-          <div key={pheed.id}>
-            <h4>{pheed.text}</h4>
-          </div>
+          <Pheed
+            key={pheed.creatorId}
+            pheedObj={pheed}
+            isOwner={pheed.creatorId === userObj?.uid}
+          />
         ))}
       </div>
     </>

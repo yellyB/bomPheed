@@ -8,10 +8,13 @@ import {
   setDoc,
   Timestamp,
   updateDoc,
+  query,
+  getDocs,
 } from "@firebase/firestore";
 import { useEffect } from "react";
 import { User } from "firebase/auth";
 import Pheed from "components/Pheed";
+import { Firestore } from "firebase/firestore";
 
 interface IProps {
   userObj: null | User;
@@ -29,19 +32,28 @@ const Home: React.FC<IProps> = ({ userObj }) => {
   const [pheeds, setPheeds] = useState<any>([]);
 
   const getPheeds = async () => {
-    const dbPheeds = await getDoc(ref2).then((res) => {
-      setPheeds([
-        {
-          text: res.data()?.text,
-          createdAt: res.data()?.createdAt,
-          creatorId: res.id,
-        },
-      ]);
-      // if(res){
-      //   res.forEach((document: any) => console.log(document.data()));
-      // }
-    });
-    // dbPheeds.forEach((document: any) => console.log(document.data()));
+    const q = query(collection(dbService, "pheed"));
+    const dataSnapShot = await getDocs(q);
+    const data = dataSnapShot.docs.map((document) => ({
+      text: document.data()?.text,
+      createdAt: document.data()?.createdAt,
+      creatorId: document.id,
+    }));
+    setPheeds(data);
+
+    // const dbPheeds = await getDoc(ref2).then((res) => {
+    //   setPheeds([
+    //     {
+    //       text: res.data()?.text,
+    //       createdAt: res.data()?.createdAt,
+    //       creatorId: res.id,
+    //     },
+    //   ]);
+    //   // if(res){
+    //   //   res.forEach((document: any) => console.log(document.data()));
+    //   // }
+    // });
+    // // dbPheeds.forEach((document: any) => console.log(document.data()));
   };
 
   const onSubmit = async (event: any) => {

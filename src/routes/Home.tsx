@@ -15,6 +15,7 @@ import { useEffect } from "react";
 import { User } from "firebase/auth";
 import Pheed from "components/Pheed";
 import { Firestore } from "firebase/firestore";
+import { IPheed } from "type/interface";
 
 interface IProps {
   userObj: null | User;
@@ -28,8 +29,8 @@ const Home: React.FC<IProps> = ({ userObj }) => {
   );
   const ref2 = doc(dbService, "pheed", "JX9UaLAfvRdNaCeoP13nzolyetC2");
 
-  const [pheed, setPheed] = useState("");
-  const [pheeds, setPheeds] = useState<any>([]);
+  const [text, setText] = useState("");
+  const [pheeds, setPheeds] = useState<IPheed[]>([]);
 
   const getPheeds = async () => {
     const q = query(collection(dbService, "pheed"));
@@ -64,28 +65,27 @@ const Home: React.FC<IProps> = ({ userObj }) => {
     // });
     setDoc(
       ref,
-      { text: pheed, createdAt: Date.now(), creatorId: userObj?.uid },
+      { text: text, createdAt: Date.now(), creatorId: userObj?.uid },
       { merge: true }
     );
-    setPheed("");
+    setText("");
   };
 
   const onChange = (event: any) => {
     event.preventDefault();
     const { value } = event.target;
-    setPheed(value);
+    setText(value);
   };
 
   useEffect(() => {
     getPheeds();
   }, []);
 
-  console.log(pheeds[0], userObj?.uid);
   return (
     <>
       <form onSubmit={onSubmit}>
         <input
-          value={pheed}
+          value={text}
           onChange={onChange}
           type="text"
           placeholder="What's on your mind?"
@@ -94,7 +94,7 @@ const Home: React.FC<IProps> = ({ userObj }) => {
         <input type="submit" value="Pheed" />
       </form>
       <div>
-        {pheeds.map((pheed: any) => (
+        {pheeds.map((pheed: IPheed) => (
           <Pheed
             key={pheed.creatorId}
             pheedObj={pheed}

@@ -1,7 +1,8 @@
 import { dbService } from "fbase";
 import { doc } from "@firebase/firestore";
-import { deleteDoc, deleteField, updateDoc } from "firebase/firestore";
+import { deleteDoc, updateDoc } from "firebase/firestore";
 import { IPheed } from "type/interface";
+import { useState } from "react";
 
 interface IProps {
   pheedObj: IPheed;
@@ -9,9 +10,26 @@ interface IProps {
 }
 
 const Pheed: React.FC<IProps> = ({ pheedObj, isOwner }) => {
-  const ref2 = doc(dbService, "text", "kkk");
+  const [editing, setEditing] = useState<boolean>(false);
+  const [newPheed, setNewPheed] = useState<string>(pheedObj.text);
 
-  console.log(pheedObj);
+  const toggleEditing = () => {
+    setEditing((prev) => !prev);
+  };
+
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+    setNewPheed(value);
+  };
+
+  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    await updateDoc(doc(dbService, "pheed", "JX9UaLAfvRdNaCeoP13nzolyetC2"), {
+      text: newPheed,
+    });
+    setEditing(false);
+  };
+
   const onDeleteClick = async () => {
     const ok = window.confirm("삭제하시겠습니까?");
     if (ok) {
@@ -25,11 +43,23 @@ const Pheed: React.FC<IProps> = ({ pheedObj, isOwner }) => {
   return (
     <>
       <div>
-        <h4>{pheedObj.text}</h4>
-        {isOwner && (
+        {editing ? (
           <>
-            <button onClick={onDeleteClick}>Delete Pheed</button>
-            <button>Edit Pheed</button>
+            <form onSubmit={onSubmit}>
+              <input value={newPheed} required onChange={onChange} />
+              <input type="submit" value="Update Pheed" />
+            </form>
+            <button onClick={toggleEditing}>Cancel</button>
+          </>
+        ) : (
+          <>
+            <h4>{pheedObj.text}</h4>
+            {isOwner && (
+              <>
+                <button onClick={onDeleteClick}>Delete Pheed</button>
+                <button onClick={toggleEditing}>Edit Pheed</button>
+              </>
+            )}
           </>
         )}
       </div>

@@ -17,7 +17,7 @@ const Pheed: React.FC<IProps> = ({ pheedObj, isOwner }) => {
     if (ok) {
       //   const data = await doc(dbService, `pheeds/${pheedObj.id}`);
       //   console.log(data);
-      await deleteDoc(doc(dbService, "text", "fff"));
+      await deleteDoc(doc(dbService, "pheed", "JX9UaLAfvRdNaCeoP13nzolyetC2"));
       // updateDoc(ref2, { creatorId: deleteField() });
     }
   };
